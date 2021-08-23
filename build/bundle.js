@@ -41520,7 +41520,7 @@
 		isLocked: false
 	};
 	let findMiddleParams = {
-		center: new Vector2(-1.5, movingPathParams.yPosition),
+		center: new Vector3(-1.5, movingPathParams.yPosition, 0.0),
 		offset: 1.0,
 		isSetNeedleCorrect: undefined
 	};
@@ -41607,10 +41607,19 @@
 			);
 			if (dist < findMiddleParams.offset) {
 				findMiddleParams.isSetNeedleCorrect = true;
+				needle.position.copy(findMiddleParams.center);
+				setTimeout(() => {
+					addPopup();
+				}, 1000);
 			}
 			else
+			{
 				findMiddleParams.isSetNeedleCorrect = false;
-			addPopup();
+				setTimeout(() => {
+					addPopup();
+				}, 1000);
+			}
+			
 		}
 		else {
 			//lock
