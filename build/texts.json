@@ -1,8 +1,8 @@
 popupData = `{
     "introTitle" : "Message", 
-    "introText" : "Click the OK button to grab the needle and start moving it. Click the mouse button to place the needle in the selected location.",
+    "introText" : "Click the OK button to grab the needle and move it to the midline of the disc space. When the needle is in the proper location, click to confirm.",
     "correctPlacementTitle": "Message",
-    "correctPlacementText": "Good work! The needle is now positioned properly. Click OK to continue.",
+    "correctPlacementText": "The needle is now correctly positioned and will serve as a reference point for midline going forward.",
     "uncorrectPlacementTitle": "Message",
     "uncorrectPlacementText": " Incorrect, please try again. The needle is too far from the correct position."
 }`
