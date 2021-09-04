@@ -41524,6 +41524,12 @@
 		offset: 1.0,
 		isSetNeedleCorrect: undefined
 	};
+	let touchParams = {
+		objectLeftTopCorner: { x: 360, y: 210 },
+		objectRightBottomCorner: { x: 380, y: 350 },
+		mouseDown: { x: 0 },
+		limits: {min: 378, max: 413}
+	};
 
 	class App {
 		init() {
@@ -41571,6 +41577,9 @@
 			canvas.addEventListener('mousemove', onMouseMove, false);
 			canvas.addEventListener('mousedown', onMouseDown, false);
 			popupBtn.addEventListener('click', removePopup, false);
+			canvas.addEventListener("touchstart",   touch_start_handler);
+	    	canvas.addEventListener("touchmove",    touch_move_handler);    
+	    	canvas.addEventListener("touchend",     touch_up_handler);
 
 			animate();
 		}
@@ -41601,24 +41610,7 @@
 			document.exitPointerLock();
 			needleParams.isLocked = false;
 			//check right placement
-			let dist = Math.sqrt(
-				(needle.position.x - findMiddleParams.center.x) * (needle.position.x - findMiddleParams.center.x) +
-				(needle.position.y - findMiddleParams.center.y) * (needle.position.y - findMiddleParams.center.y)
-			);
-			if (dist < findMiddleParams.offset) {
-				findMiddleParams.isSetNeedleCorrect = true;
-				needle.position.copy(findMiddleParams.center);
-				setTimeout(() => {
-					addPopup();
-				}, 1000);
-			}
-			else
-			{
-				findMiddleParams.isSetNeedleCorrect = false;
-				setTimeout(() => {
-					addPopup();
-				}, 1000);
-			}
+			chechRightPlacement();
 			
 		}
 		else {
@@ -41682,6 +41674,60 @@
 		popupBtn.style.display = 'none';
 		if(!findMiddleParams.isSetNeedleCorrect) {
 			onMouseDown();
+		}
+	}
+
+	function touch_start_handler(e) {
+		let evt = (typeof e.originalEvent === 'undefined') ? e : e.originalEvent;
+	    let touch = evt.touches[0] || evt.changedTouches[0];
+		if (touch.pageX > touchParams.objectLeftTopCorner.x &&
+			touch.pageY > touchParams.objectLeftTopCorner.y &&
+			touch.pageX < touchParams.objectRightBottomCorner.x &&
+			touch.pageY < touchParams.objectRightBottomCorner.y
+		) {
+			needleParams.isLocked = true;
+			touchParams.mouseDown.x = touch.pageX;
+		}
+	}
+
+	function touch_move_handler(e) {
+		let evt = (typeof e.originalEvent === 'undefined') ? e : e.originalEvent;
+		let touch = evt.touches[0] || evt.changedTouches[0];
+		if (needleParams.isLocked) {
+			let newMouseX = parseInt(touch.pageX);
+			if (newMouseX < touchParams.limits.max && newMouseX > touchParams.limits.min) {
+				let newXPosition = (newMouseX - touchParams.limits.min) *
+					(movingPathParams.xMaxPosition - movingPathParams.xMinPosition) /
+					(touchParams.limits.max - touchParams.limits.min) + movingPathParams.xMinPosition;
+				needle.position.x = newXPosition;
+			}
+		}
+	}
+
+	function touch_up_handler() {
+		needleParams.isLocked = false;
+		touchParams.mouseDown.x = 0;
+		chechRightPlacement();
+	}
+
+	function chechRightPlacement() {
+		let dist = Math.sqrt(
+			(needle.position.x - findMiddleParams.center.x) * (needle.position.x - findMiddleParams.center.x) +
+			(needle.position.y - findMiddleParams.center.y) * (needle.position.y - findMiddleParams.center.y)
+		);
+		if (dist < findMiddleParams.offset) {
+			findMiddleParams.isSetNeedleCorrect = true;
+			needle.position.copy(findMiddleParams.center);
+			setTimeout(() => {
+				addPopup();
+			}, 1000);
+		}
+		else
+		{
+			findMiddleParams.isSetNeedleCorrect = false;
+			setTimeout(() => {
+				addPopup();
+			}, 1000);
 		}
 	}
 
