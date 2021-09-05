@@ -189,13 +189,13 @@ function removePopup() {
 function touch_start_handler(e) {
 	let evt = (typeof e.originalEvent === 'undefined') ? e : e.originalEvent;
     let touch = evt.touches[0] || evt.changedTouches[0];
-	if (touch.pageX > touchParams.objectLeftTopCorner.x &&
-		touch.pageY > touchParams.objectLeftTopCorner.y &&
-		touch.pageX < touchParams.objectRightBottomCorner.x &&
-		touch.pageY < touchParams.objectRightBottomCorner.y
+	if (parseInt(touch.pageX) > touchParams.objectLeftTopCorner.x &&
+		parseInt(touch.pageY) > touchParams.objectLeftTopCorner.y &&
+		parseInt(touch.pageX) < touchParams.objectRightBottomCorner.x &&
+		parseInt(touch.pageY) < touchParams.objectRightBottomCorner.y
 	) {
 		needleParams.isLocked = true;
-		touchParams.mouseDown.x = touch.pageX;
+		touchParams.mouseDown.x = parseInt(touch.pageX);
 	}
 }
 
@@ -209,11 +209,13 @@ function touch_move_handler(e) {
 				(movingPathParams.xMaxPosition - movingPathParams.xMinPosition) /
 				(touchParams.limits.max - touchParams.limits.min) + movingPathParams.xMinPosition;
 			needle.position.x = newXPosition;
+			touchParams.objectLeftTopCorner.x = newMouseX - 10;
+			touchParams.objectRightBottomCorner.x = newMouseX + 10;
 		}
 	}
 }
 
-function touch_up_handler() {
+function touch_up_handler(e) {
 	needleParams.isLocked = false;
 	if (touchParams.mouseDown.x != 0) {
 		touchParams.mouseDown.x = 0;
