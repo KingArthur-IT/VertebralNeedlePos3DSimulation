@@ -37,7 +37,7 @@ let touchParams = {
 	objectLeftTopCorner: { x: 360, y: 210 },
 	objectRightBottomCorner: { x: 380, y: 350 },
 	mouseDown: { x: 0 },
-	limits: {min: 378, max: 413}
+	limits: {min: 370, max: 490}
 }
 
 class App {
@@ -215,8 +215,10 @@ function touch_move_handler(e) {
 
 function touch_up_handler() {
 	needleParams.isLocked = false;
-	touchParams.mouseDown.x = 0;
-	chechRightPlacement();
+	if (touchParams.mouseDown.x != 0) {
+		touchParams.mouseDown.x = 0;
+		chechRightPlacement();	
+	}
 }
 
 function chechRightPlacement() {
