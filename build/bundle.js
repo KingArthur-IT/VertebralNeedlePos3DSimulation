@@ -41678,6 +41678,7 @@
 	}
 
 	function touch_start_handler(e) {
+		needleParams.isLocked = false;
 		let evt = (typeof e.originalEvent === 'undefined') ? e : e.originalEvent;
 	    let touch = evt.touches[0] || evt.changedTouches[0];
 		if (parseInt(touch.pageX) > touchParams.objectLeftTopCorner.x &&
